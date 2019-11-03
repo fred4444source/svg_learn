@@ -4,6 +4,6 @@
 	<rect x="100" y="5" width="30" height="80" style="stroke : blue; fill : none;"/>
 
 	<svg x="100px" y="5px" width="30px" height="80px" viewBox="0 0 50 50" preserveAspectRatio="xMaxYMax meet">
-		<circle cx="25" y="25" r="25" style="stroke : black; fill : none;"/>
+		<circle cx="25" cy="25" r="25" style="stroke : black; fill : none;"/>
 	</svg>
 </svg>
