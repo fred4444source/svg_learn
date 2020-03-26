@@ -1,0 +1,83 @@
+<!doctype html>
+<html>
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+		<!-- <meta http-equiv="refresh" content="20">  -->
+		<meta name="viewport" content="width=device-width, initial-scale=1"/>
+		<title>use javascript to create SVG test</title>
+		<meta name="keywords" content="______keywords______"/>
+		<meta name="description" content="______description______"/>
+
+		<link rel="shortcut icon" type="image/x-icon" href="favicon.ico"/>
+
+		<script>
+			window.onload = () => {
+				const handle = {
+					get(target, property, receiver) {
+						return target.getAttribute(property);
+					},
+					set(target, property, value, receiver) {
+						return target.setAttribute(property, value);
+					}
+				}
+				const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+				//const svg = document.createElement('svg');
+				const svg_p = new Proxy(svg, handle);
+				//svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+				svg_p.width = '1000';
+				svg_p.height = '1000';
+				svg_p.viewBox = '0 0 1000 1000';
+				svg_p.style = 'width : 1000px; height : 1000px; border : 1px solid black;';
+				svg_p.xmlns = 'http://www.w3.org/2000/svg';
+				document.body.appendChild(svg);
+
+				const draw_line = function(o) {
+					const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+					const line_p = new Proxy(line, handle);
+					Reflect.ownKeys(o.propertys).forEach((k) => {
+						line_p[k] = o.propertys[k];
+					});
+					svg.appendChild(line);
+					return {
+						o : line,
+						p : line_p
+					}
+				}
+				const title = document.createElementNS('http://www.w3.org/2000/svg', 'title');
+				const title_p = new Proxy(title, handle);
+				title.textContent = 'js svg';
+				svg.appendChild(title);
+				const random_line = function() {
+					draw_line({
+						propertys : {
+							x1 : 500,
+							y1 : 500,
+							x2 : Number.parseInt(Math.random() * 1000),
+							y2 : Number.parseInt(Math.random() * 1000),
+							stroke : `rgba(${Number.parseInt(Math.random() * 100)}%, ${Number.parseInt(Math.random() * 100)}%, ${Number.parseInt(Math.random() * 100)}%, 80%)`,
+							'stroke-width' : Number.parseInt(Math.random() * 10),
+							'stroke-linecap' : 'round'
+						}
+					});
+				}
+				let timeout_handle = null;
+				let count = 0;
+				const interval_draw_line = () => {
+					if (count < 100) {
+						random_line();
+						count++;
+						console.log('count:' + count);
+						timeout_handle = window.setTimeout(interval_draw_line, 500);
+					}
+				}
+				interval_draw_line();
+			}
+		</script>
+	</head>
+	<body>
+		if use document.createElement to create svg dom, the child element also can be append but the svg width is always 0.
+		<br/>
+		svg is XML is not html so need use document.createElementNS
+		<br/>
+	</body>
+</html>
